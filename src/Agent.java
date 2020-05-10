@@ -1,37 +1,55 @@
+import java.util.Scanner;
+
 public class Agent {
 
     private State state;
+    Scanner in = new Scanner(System.in);
+    CardActionPairGenerator cardActionPairGenerator = new CardActionPairGenerator();
 
     void read() {
-        for (int i = 0; i < 2; i++) {
-            Player player = state.getPlayerX(i);
-            player.setHp(int in.nextInt());
-            player.setMana(int in.nextInt());
-            player.setCardsRemaining(int in.nextInt())
-            //player.setRune(int in.nextInt())
-            //player.setDraw(int in.nextInt())
+        for(Player player : state.getPlayers())
+        {
+            player.setHp(in.nextInt());
+            player.setMana(in.nextInt());
+            player.setCardsRemaining(in.nextInt());
+            player.setRune(in.nextInt());
+            player.setDraw(in.nextInt());
         }
-        int opponentHand = in.nextInt();
-        int opponentActions = in.nextInt();
+//        for (int i = 0; i < 2; i++) {
+//            Player player = state.getPlayerX(i);
+//            player.setHp(in.nextInt());
+//            player.setMana(in.nextInt());
+//            player.setCardsRemaining(in.nextInt());
+//            player.setRune(in.nextInt());
+//            player.setDraw(in.nextInt());
+//        } N.B. fallback code for if the above doesn't work
+        state.setOppHandSize(in.nextInt());
+        state.setOppTotalMovesLastTurn(in.nextInt());
         if (in.hasNextLine()) {
             in.nextLine();
         }
-        for (int i = 0; i < opponentActions; i++) {
-            String cardNumberAndAction = in.nextLine();
+        state.clearOppActionsLastTurn();
+        for (int i = 0; i < state.getOppTotalMovesLastTurn(); i++) {
+            state.appendOppActionsLastTurn(cardActionPairGenerator.getCardActionPair(in.nextLine()));
         }
         int cardCount = in.nextInt();
+        state.clearCards();
         for (int i = 0; i < cardCount; i++) {
-            int cardNumber = in.nextInt();
-            int instanceId = in.nextInt();
+            //TODO: make this pass the uid and iid of the card only to allow lookup in card db
+            //TODO: make this track changes in card instance from one turn to next
+            Card card = new Card();
+            card.setUid(in.nextInt());
+            card.setIid(in.nextInt());
             int location = in.nextInt();
-            int cardType = in.nextInt();
-            int cost = in.nextInt();
-            int attack = in.nextInt();
-            int defense = in.nextInt();
-            String abilities = in.next();
-            int myHealthChange = in.nextInt();
-            int opponentHealthChange = in.nextInt();
-            int cardDraw = in.nextInt();
+            card.setCardType(in.nextInt());
+            card.setCost(in.nextInt());
+            card.setAttack(in.nextInt());
+            card.setDefense(in.nextInt());
+            card.setAbilities(in.next());
+            card.setHpChange(in.nextInt());
+            card.setHpChangeEnemy(in.nextInt());
+            card.setCardDraw(in.nextInt());
+            state.appendCards(card, location);
         }
     }
 }
