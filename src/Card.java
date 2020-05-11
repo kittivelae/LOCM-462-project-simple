@@ -1,6 +1,26 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.HashMap;
+import java.util.Map;
+
 //TODO need to parse list of LOCM cards into a kv pair of dictionaries
 //TODO make this store at at most if poss uid, iid and sequence of modifications to card instance
 public class Card {
+
+
+    private static Map<Integer, Card> cardList = new HashMap<>();
+
+    public static void loadCards() {
+        try(BufferedReader in = new BufferedReader(new FileReader("/home/rhiannon/IdeaProjects/locm_bot/src/cardlist.txt"))) {
+            String str;
+            while ((str = in.readLine()) != null) {
+                System.out.println(str);
+            }
+        }
+        catch (IOException e) {
+            System.out.println("File Read Error");
+        }
+    }
 
     private int uid;
     private int iid;
