@@ -2,9 +2,24 @@ import java.util.Scanner;
 
 public class Agent {
 
+
+
     private State state;
     Scanner in = new Scanner(System.in);
     CardActionPairGenerator cardActionPairGenerator = new CardActionPairGenerator();
+
+    void run() {
+        int turnNumber = 0;
+        while (true) {
+            this.read();
+            if (turnNumber < 30) {
+                System.out.println("PICK 0");
+                turnNumber = turnNumber + 1;
+            } else {
+                System.out.println("PASS");
+            }
+        }
+    }
 
     void read() {
         for(Player player : state.getPlayers())
@@ -49,6 +64,7 @@ public class Agent {
             card.setHpChange(in.nextInt());
             card.setHpChangeEnemy(in.nextInt());
             card.setCardDraw(in.nextInt());
+            card.setLane(in.nextInt());
             state.appendCards(card, location);
         }
     }
