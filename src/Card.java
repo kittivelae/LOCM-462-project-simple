@@ -9,8 +9,7 @@ import java.util.Map;
 //TODO make this store at at most if poss uid, iid and sequence of modifications to card instance
 public class Card {
 
-
-    private static Map<Integer, Card> cardList = new HashMap<>();
+    /*private static Map<Integer, Card> cardList = new HashMap<>();
 
     public static void main(String[] args)
     {
@@ -22,7 +21,6 @@ public class Card {
             String str;
             while ((str = in.readLine()) != null) {
                 String[] stringSplits = str.split(" ; ");
-                for(String s : stringSplits) { System.out.println(s); }
                 int cardId = Integer.parseInt(stringSplits[0]);
                 Card card = new Card();
                 switch (stringSplits[2]) {
@@ -53,8 +51,9 @@ public class Card {
         catch (IOException e) {
             System.out.println("File Read Error");
         }
-    }
+    }*/
 
+    private int uid;
     private int iid;
     private int location;
     private int cardType;
@@ -64,7 +63,16 @@ public class Card {
     private String abilities;
     private int hpChange;
     private int hpChangeEnemy;
+    private int lane;
     private int cardDraw;
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
 
     public int getIid() {
         return iid;
@@ -120,10 +128,20 @@ public class Card {
     public void setHpChangeEnemy(int hpChangeEnemy) {
         this.hpChangeEnemy = hpChangeEnemy;
     }
+
+    public int getLane() {
+        return lane;
+    }
+
+    public void setLane(int lane) {
+        this.lane = lane;
+    }
+
     public int getCardDraw() {
         return cardDraw;
     }
     public void setCardDraw(int cardDraw) {
         this.cardDraw = cardDraw;
     }
+
 }
