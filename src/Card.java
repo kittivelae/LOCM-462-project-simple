@@ -1,13 +1,32 @@
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-//TODO need to parse list of LOCM cards into a kv pair of dictionaries
-//TODO make this store at at most if poss uid, iid and sequence of modifications to card instance
+
 public class Card {
+
+    private static final Map<Integer, Float> costWeights = new HashMap<>() {
+        {
+            put(0, 0.9f);
+            put(1, 1.2f);
+            put(2, 1.1f);
+            put(3, 1.0f);
+            put(4, 0.9f);
+            put(5, 0.8f);
+            put(6, 0.7f);
+            put(7, 0.6f);
+            put(8, 0.4f);
+            put(9, 0.4f);
+            put(10, 0.2f);
+            put(11, 0.2f);
+            put(12, 0.2f);
+        }
+
+    };
+
+    public static float getCostWeighting(int cost) {
+        return Card.costWeights.get(cost);
+    }
+
 
     /*private static Map<Integer, Card> cardList = new HashMap<>();
 
@@ -143,5 +162,4 @@ public class Card {
     public void setCardDraw(int cardDraw) {
         this.cardDraw = cardDraw;
     }
-
 }
