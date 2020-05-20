@@ -1,4 +1,3 @@
-import org.jetbrains.annotations.NotNull;
 
 enum ActionType {
     SUMMON,

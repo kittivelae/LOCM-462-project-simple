@@ -8,16 +8,19 @@ public class Agent {
     Scanner in = new Scanner(System.in);
     CardActionPairGenerator cardActionPairGenerator = new CardActionPairGenerator();
 
-    void run() {
-        int turnNumber = 0;
+    void draft() {
+        //noinspection InfiniteLoopStatement
         while (true) {
             this.read();
-            if (turnNumber < 30) {
-                System.out.println("PICK 0");
-                turnNumber = turnNumber + 1;
-            } else {
-                System.out.println("PASS");
-            }
+            System.out.println("PICK 0");
+        }
+    }
+
+    void play() {
+        //noinspection InfiniteLoopStatement
+        while (true) {
+            this.read();
+            System.out.println("PASS");
         }
     }
 
