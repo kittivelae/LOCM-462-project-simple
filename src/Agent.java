@@ -2,9 +2,24 @@ import java.util.Scanner;
 
 public class Agent {
 
+
+
     private State state;
     Scanner in = new Scanner(System.in);
     CardActionPairGenerator cardActionPairGenerator = new CardActionPairGenerator();
+
+    void run() {
+        int turnNumber = 0;
+        while (true) {
+            this.read();
+            if (turnNumber < 30) {
+                System.out.println("PICK 0");
+                turnNumber = turnNumber + 1;
+            } else {
+                System.out.println("PASS");
+            }
+        }
+    }
 
     void read() {
         for(Player player : state.getPlayers())
@@ -33,11 +48,9 @@ public class Agent {
             state.appendOppActionsLastTurn(cardActionPairGenerator.getCardActionPair(in.nextLine()));
         }
         int cardCount = in.nextInt();
+        state.clearCards();
         for (int i = 0; i < cardCount; i++) {
-            //TODO: make this pass the uid and iid of the card only to allow lookup in card db
-            //TODO: make this track changes in card instance from one turn to next
             Card card = new Card();
-            state.clearCards();
             card.setUid(in.nextInt());
             card.setIid(in.nextInt());
             int location = in.nextInt();
@@ -49,7 +62,23 @@ public class Agent {
             card.setHpChange(in.nextInt());
             card.setHpChangeEnemy(in.nextInt());
             card.setCardDraw(in.nextInt());
+            card.setLane(in.nextInt());
             state.appendCards(card, location);
         }
+    }
+
+    void cardEvalForDraft(Card[] draftOptions) {
+        double score = 0;
+        int prospectiveCard = 0;
+        for (int i = 0; i < 2; i++) {
+            int cardCost = draftOptions[i].getCost();
+            double prospectScore = Card.getCostWeighting(cardCost)*Math.pow(0.95, state.getPlayerX(0).getManaCurveForGivenVal(cardCost));
+            if (prospectScore > score) {
+                score = prospectScore;
+                prospectiveCard = i;
+            }
+        }
+        System.out.println("PICK " + prospectiveCard + ";");
+        state.getPlayerX(0).incrementManaCurveForGivenVal(draftOptions[prospectiveCard].getCost());
     }
 }

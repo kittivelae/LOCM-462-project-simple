@@ -7,7 +7,7 @@ import java.util.Map;
 public class State {
 
     private Player[] players = new Player[2];
-    //TODO: move 'opp*' member vars into Player class
+    //TODO 6: move 'opp*' member vars into Player class
     private int oppHandSize;
     private int oppTotalMovesLastTurn;
     private List<Action> oppActionsLastTurn = new ArrayList<>();
