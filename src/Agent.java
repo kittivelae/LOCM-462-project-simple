@@ -28,26 +28,26 @@ public class Agent {
         for(Player player : state.getPlayers())
         {
             player.setHp(in.nextInt());
-            player.setMana(in.nextInt());
+            player.setCost(in.nextInt());
             player.setCardsRemaining(in.nextInt());
             player.setRune(in.nextInt());
             player.setDraw(in.nextInt());
         }
 //        for (int i = 0; i < 2; i++) {
-//            Player player = state.getPlayerX(i);
+//            Player player = state.getPlayer(i);
 //            player.setHp(in.nextInt());
-//            player.setMana(in.nextInt());
+//            player.setCost(in.nextInt());
 //            player.setCardsRemaining(in.nextInt());
 //            player.setRune(in.nextInt());
 //            player.setDraw(in.nextInt());
 //        } N.B. fallback code for if the above doesn't work
-        state.setOppHandSize(in.nextInt());
-        state.setOppTotalMovesLastTurn(in.nextInt());
+        state.opp().setHandSize(in.nextInt());
+        state.opp().setTotalMovesLastTurn(in.nextInt());
         if (in.hasNextLine()) {
             in.nextLine();
         }
         state.clearOppActionsLastTurn();
-        for (int i = 0; i < state.getOppTotalMovesLastTurn(); i++) {
+        for (int i = 0; i < state.opp().getTotalMovesLastTurn(); i++) {
             state.appendOppActionsLastTurn(cardActionPairGenerator.getCardActionPair(in.nextLine()));
         }
         int cardCount = in.nextInt();
@@ -75,13 +75,27 @@ public class Agent {
         int prospectiveCard = 0;
         for (int i = 0; i < 2; i++) {
             int cardCost = draftOptions[i].getCost();
-            double prospectScore = Card.getCostWeighting(cardCost)*Math.pow(0.95, state.getPlayerX(0).getManaCurveForGivenVal(cardCost));
+            double prospectScore = Card.getCostWeighting(cardCost)*Math.pow(0.95, state.me().getCostCurveForGivenVal(cardCost));
             if (prospectScore > score) {
                 score = prospectScore;
                 prospectiveCard = i;
             }
         }
         System.out.println("PICK " + prospectiveCard + ";");
-        state.getPlayerX(0).incrementManaCurveForGivenVal(draftOptions[prospectiveCard].getCost());
+        state.me().incrementCostCurveForGivenVal(draftOptions[prospectiveCard].getCost());
+    }
+
+    int stateEvalForPlay() {
+        //Acknowledgement: this is a refactor of Strategy-Card-Game-AI-Competition/referee-nim/Research/StateEvaluations/Simple.nim
+        int score = 0;
+        if(state.me().getHp() <= 0) {
+            score = score - 1000;
+        } else if(state.opp().getHp() <= 0) {
+            score = score + 1000;
+        }
+        score = score + 2*(state.me().getHp() - state.opp().getHp());
+        return score;
+
+
     }
 }

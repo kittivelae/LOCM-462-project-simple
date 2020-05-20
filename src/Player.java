@@ -7,23 +7,25 @@ import java.util.Map;
  **/
 
 public class Player {
-    private Map<Integer, Integer> manaCurve = new HashMap<>() {{
+    private Map<Integer, Integer> costCurve = new HashMap<>() {{
             for(int i=0; i<13; i++) {
                 put(i, 0);
             }
         }};
     private int hp;
-    private int mana;
+    private int cost;
     private int cardsRemaining;
     private int rune;
     private int draw;
+    private int handSize;
+    private int totalMovesLastTurn;
 
-    public Integer getManaCurveForGivenVal(int mana) {
-        return manaCurve.get(mana);
+    public int getCostCurveForGivenVal(int cost) {
+        return costCurve.get(cost);
     }
 
-    public void incrementManaCurveForGivenVal(int mana) {
-        manaCurve.put(mana, manaCurve.get(mana) + 1);
+    public void incrementCostCurveForGivenVal(int cost) {
+        costCurve.put(cost, costCurve.get(cost) + 1);
     }
 
     public int getHp() {
@@ -32,11 +34,11 @@ public class Player {
     public void setHp(int hp) {
         this.hp = hp;
     }
-    public int getMana() {
-        return mana;
+    public int getCost() {
+        return cost;
     }
-    public void setMana(int mana) {
-        this.mana = mana;
+    public void setCost(int cost) {
+        this.cost = cost;
     }
     public int getCardsRemaining() {
         return cardsRemaining;
@@ -55,6 +57,18 @@ public class Player {
     }
     public void setDraw(int draw) {
         this.draw = draw;
+    }
+    public int getTotalMovesLastTurn() {
+        return totalMovesLastTurn;
+    }
+    public void setTotalMovesLastTurn(int totalMovesLastTurn) {
+        this.totalMovesLastTurn = totalMovesLastTurn;
+    }
+    public int getHandSize() {
+        return handSize;
+    }
+    public void setHandSize(int handSize) {
+        this.handSize = handSize;
     }
 }
 
