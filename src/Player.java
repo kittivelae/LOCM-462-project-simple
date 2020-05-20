@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,6 +21,11 @@ public class Player {
     private int draw;
     private int handSize;
     private int totalMovesLastTurn;
+    private List<Card> hand = new ArrayList<>();
+    private Map<Integer, List<Card>> board = new HashMap<>() {{
+        put(1, new ArrayList<>());
+        put(2, new ArrayList<>());
+    }};
 
     public int getCostCurveForGivenVal(int cost) {
         return costCurve.get(cost);
@@ -69,6 +76,23 @@ public class Player {
     }
     public void setHandSize(int handSize) {
         this.handSize = handSize;
+    }
+    public void appendHand(Card card) {
+        hand.add(card);
+    }
+    public List<Card> getHand() {
+        return hand;
+    }
+    public void appendBoard(int lane, Card card) {
+        board.get(lane).add(card);
+    }
+    public List<Card> getBoard(int lane) {
+        return board.get(lane);
+    }
+    public void clearCards() {
+        hand = new ArrayList<>();
+        board.put(1, new ArrayList<>());
+        board.put(2, new ArrayList<>());
     }
 }
 

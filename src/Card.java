@@ -82,7 +82,6 @@ public class Card {
     private String abilities;
     private int hpChange;
     private int hpChangeEnemy;
-    private int lane;
     private int cardDraw;
 
     public int getUid() {
@@ -147,15 +146,6 @@ public class Card {
     public void setHpChangeEnemy(int hpChangeEnemy) {
         this.hpChangeEnemy = hpChangeEnemy;
     }
-
-    public int getLane() {
-        return lane;
-    }
-
-    public void setLane(int lane) {
-        this.lane = lane;
-    }
-
     public int getCardDraw() {
         return cardDraw;
     }

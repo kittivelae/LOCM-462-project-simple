@@ -32,6 +32,7 @@ public class Agent {
             player.setCardsRemaining(in.nextInt());
             player.setRune(in.nextInt());
             player.setDraw(in.nextInt());
+            player.clearCards();
         }
 //        for (int i = 0; i < 2; i++) {
 //            Player player = state.getPlayer(i);
@@ -65,8 +66,16 @@ public class Agent {
             card.setHpChange(in.nextInt());
             card.setHpChangeEnemy(in.nextInt());
             card.setCardDraw(in.nextInt());
-            card.setLane(in.nextInt());
+            int lane = in.nextInt();
+            if(location == 0) {
+                state.me().appendHand(card);
+            } else if(location == 1) {
+                state.me().appendBoard(lane, card);
+            } else if(location == -1) {
+                state.opp().appendBoard(lane, card);
+            }
             state.appendCards(card, location);
+            state.me().setHandSize(state.me().getHand().size()); //move this to Player
         }
     }
 
@@ -88,14 +97,24 @@ public class Agent {
     int stateEvalForPlay() {
         //Acknowledgement: this is a refactor of Strategy-Card-Game-AI-Competition/referee-nim/Research/StateEvaluations/Simple.nim
         int score = 0;
+        //death
         if(state.me().getHp() <= 0) {
-            score = score - 1000;
+            score -= 1000;
         } else if(state.opp().getHp() <= 0) {
-            score = score + 1000;
+            score += 1000;
         }
-        score = score + 2*(state.me().getHp() - state.opp().getHp());
+        score += 2 * (state.me().getHp() - state.opp().getHp()); //Health
+        score += 5 * (state.me().getHandSize() - state.opp().getHandSize()); //hand advantage
+        //board advantage
+        score += 5 * (state.me().getBoard(1).size() + state.me().getBoard(2).size() - state.opp().getBoard(1).size() - state.opp().getBoard(2).size());
+        for(int i=1; i<3; i++) {
+            for(Card card : state.me().getBoard(i)) {
+                score += card.getAttack() + card.getDefense();
+            }
+            for(Card card : state.opp().getBoard(i)) {
+                score -= card.getAttack() - card.getDefense();
+            }
+        }
         return score;
-
-
     }
 }
