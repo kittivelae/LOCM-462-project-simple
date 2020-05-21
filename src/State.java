@@ -7,7 +7,6 @@ import java.util.Map;
 public class State {
 
     private Player[] players = new Player[2];
-    private List<Action> oppActionsLastTurn = new ArrayList<>();
 
     public Player[] getPlayers() {
         return players;
@@ -23,16 +22,6 @@ public class State {
     }
     public void setPlayer(int playerNum, Player player) {
         this.players[playerNum-1] = player;
-    }
-
-    public List<Action> getOppActionsLastTurn() {
-        return oppActionsLastTurn;
-    }
-    public void appendOppActionsLastTurn(Action cardActionPair) {
-        this.oppActionsLastTurn.add(cardActionPair);
-    }
-    public void clearOppActionsLastTurn() {
-        this.oppActionsLastTurn = new ArrayList<>();
     }
 }
 

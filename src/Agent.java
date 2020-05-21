@@ -34,22 +34,13 @@ public class Agent {
             player.setDraw(in.nextInt());
             player.clearCards();
         }
-//        for (int i = 0; i < 2; i++) {
-//            Player player = state.getPlayer(i);
-//            player.setHp(in.nextInt());
-//            player.setCost(in.nextInt());
-//            player.setCardsRemaining(in.nextInt());
-//            player.setRune(in.nextInt());
-//            player.setDraw(in.nextInt());
-//        } N.B. fallback code for if the above doesn't work
         state.opp().setHandSize(in.nextInt());
         state.opp().setTotalMovesLastTurn(in.nextInt());
         if (in.hasNextLine()) {
             in.nextLine();
         }
-        state.clearOppActionsLastTurn();
         for (int i = 0; i < state.opp().getTotalMovesLastTurn(); i++) {
-            state.appendOppActionsLastTurn(cardActionPairGenerator.getCardActionPair(in.nextLine()));
+            in.nextLine();
         }
         int cardCount = in.nextInt();
         for (int i = 0; i < cardCount; i++) {
