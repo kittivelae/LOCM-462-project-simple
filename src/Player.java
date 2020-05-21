@@ -22,10 +22,7 @@ public class Player {
     private int handSize;
     private int totalMovesLastTurn;
     private List<Card> hand = new ArrayList<>();
-    private Map<Integer, List<Card>> board = new HashMap<>() {{
-        put(1, new ArrayList<>());
-        put(2, new ArrayList<>());
-    }};
+    private List<Card> board = new ArrayList<>();
 
     public int getCostCurveForGivenVal(int cost) {
         return costCurve.get(cost);
@@ -83,16 +80,15 @@ public class Player {
     public List<Card> getHand() {
         return hand;
     }
-    public void appendBoard(int lane, Card card) {
-        board.get(lane).add(card);
+    public void appendBoard(Card card) {
+        board.add(card);
     }
-    public List<Card> getBoard(int lane) {
-        return board.get(lane);
+    public List<Card> getBoard() {
+        return board;
     }
     public void clearCards() {
         hand = new ArrayList<>();
-        board.put(1, new ArrayList<>());
-        board.put(2, new ArrayList<>());
+        board = new ArrayList<>();
     }
 }
 

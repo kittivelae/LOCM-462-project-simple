@@ -52,7 +52,6 @@ public class Agent {
             state.appendOppActionsLastTurn(cardActionPairGenerator.getCardActionPair(in.nextLine()));
         }
         int cardCount = in.nextInt();
-        state.clearCards();
         for (int i = 0; i < cardCount; i++) {
             Card card = new Card();
             card.setUid(in.nextInt());
@@ -66,15 +65,13 @@ public class Agent {
             card.setHpChange(in.nextInt());
             card.setHpChangeEnemy(in.nextInt());
             card.setCardDraw(in.nextInt());
-            int lane = in.nextInt();
             if(location == 0) {
                 state.me().appendHand(card);
             } else if(location == 1) {
-                state.me().appendBoard(lane, card);
+                state.me().appendBoard(card);
             } else if(location == -1) {
-                state.opp().appendBoard(lane, card);
+                state.opp().appendBoard(card);
             }
-            state.appendCards(card, location);
             state.me().setHandSize(state.me().getHand().size()); //move this to Player
         }
     }
@@ -106,14 +103,12 @@ public class Agent {
         score += 2 * (state.me().getHp() - state.opp().getHp()); //Health
         score += 5 * (state.me().getHandSize() - state.opp().getHandSize()); //hand advantage
         //board advantage
-        score += 5 * (state.me().getBoard(1).size() + state.me().getBoard(2).size() - state.opp().getBoard(1).size() - state.opp().getBoard(2).size());
-        for(int i=1; i<3; i++) {
-            for(Card card : state.me().getBoard(i)) {
-                score += card.getAttack() + card.getDefense();
-            }
-            for(Card card : state.opp().getBoard(i)) {
-                score -= card.getAttack() - card.getDefense();
-            }
+        score += 5 * (state.me().getBoard().size() - state.opp().getBoard().size());
+        for(Card card : state.me().getBoard()) {
+            score += card.getAttack() + card.getDefense();
+        }
+        for(Card card : state.opp().getBoard()) {
+            score -= card.getAttack() - card.getDefense();
         }
         return score;
     }

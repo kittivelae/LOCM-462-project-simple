@@ -8,11 +8,7 @@ public class State {
 
     private Player[] players = new Player[2];
     private List<Action> oppActionsLastTurn = new ArrayList<>();
-    private Map<Integer, List<Card>> cards = new HashMap<>(); //may need to change if it turns out card placement matters in this game
 
-    public State() {
-        clearCards();
-    }
     public Player[] getPlayers() {
         return players;
     }
@@ -27,17 +23,6 @@ public class State {
     }
     public void setPlayer(int playerNum, Player player) {
         this.players[playerNum-1] = player;
-    }
-    public List<Card> getCards(int location) {
-        return cards.get(location);
-    }
-    public void appendCards(Card card, int location) {
-        cards.get(location).add(card);
-    }
-    public void clearCards() {
-        cards.put(1, new ArrayList<>());
-        cards.put(0, new ArrayList<>());
-        cards.put(-1, new ArrayList<>());
     }
 
     public List<Action> getOppActionsLastTurn() {
