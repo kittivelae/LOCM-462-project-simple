@@ -28,7 +28,7 @@ public class Agent {
         for(Player player : state.getPlayers())
         {
             player.setHp(in.nextInt());
-            player.setCost(in.nextInt());
+            player.setCostBudget(in.nextInt());
             player.setCardsRemaining(in.nextInt());
             player.setRune(in.nextInt());
             player.setDraw(in.nextInt());

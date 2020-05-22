@@ -15,7 +15,7 @@ public class Player {
             }
         }};
     private int hp;
-    private int cost;
+    private int costBudget;
     private int cardsRemaining;
     private int rune;
     private int draw;
@@ -38,11 +38,11 @@ public class Player {
     public void setHp(int hp) {
         this.hp = hp;
     }
-    public int getCost() {
-        return cost;
+    public int getCostBudget() {
+        return costBudget;
     }
-    public void setCost(int cost) {
-        this.cost = cost;
+    public void setCostBudget(int costBudget) {
+        this.costBudget = costBudget;
     }
     public int getCardsRemaining() {
         return cardsRemaining;
