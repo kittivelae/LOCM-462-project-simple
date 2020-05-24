@@ -15,13 +15,13 @@ public class Player {
             }
         }};
     private int hp;
-    private int cost;
+    private int costBudget;
     private int cardsRemaining;
     private int rune;
     private int draw;
     private int handSize;
     private int totalMovesLastTurn;
-    private List<Card> hand = new ArrayList<>();
+    private Map<Integer, Card> hand = new HashMap<>();
     private List<Card> board = new ArrayList<>();
 
     public int getCostCurveForGivenVal(int cost) {
@@ -38,11 +38,11 @@ public class Player {
     public void setHp(int hp) {
         this.hp = hp;
     }
-    public int getCost() {
-        return cost;
+    public int getCostBudget() {
+        return costBudget;
     }
-    public void setCost(int cost) {
-        this.cost = cost;
+    public void setCostBudget(int costBudget) {
+        this.costBudget = costBudget;
     }
     public int getCardsRemaining() {
         return cardsRemaining;
@@ -77,7 +77,7 @@ public class Player {
     public void appendHand(Card card) {
         hand.add(card);
     }
-    public List<Card> getHand() {
+    public Map<Integer, Card> getHand() {
         return hand;
     }
     public void appendBoard(Card card) {

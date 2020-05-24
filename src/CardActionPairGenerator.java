@@ -1,10 +1,3 @@
-
-enum ActionType {
-    SUMMON,
-    ATTACK,
-    PASS
-}
-
 public class CardActionPairGenerator {
     /*
         The possible actions are:

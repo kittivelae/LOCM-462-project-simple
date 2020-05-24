@@ -73,12 +73,15 @@ public class Card {
     }*/
 
     private int uid;
-    private int iid;
+    //private int iid;
     private int location;
     private int cardType;
     private int cost;
     private int attack;
     private int defense;
+    private boolean hasBreakthrough = false;
+    private boolean hasGuard = false;
+    private boolean hasSmmnSickness = true;
     private String abilities;
     private int hpChange;
     private int hpChangeEnemy;
@@ -152,4 +155,24 @@ public class Card {
     public void setCardDraw(int cardDraw) {
         this.cardDraw = cardDraw;
     }
+
+    void abilityParse(String abiltyString) {
+        String abiltyRef = "BCGDLW";
+        for(int i = 0; i < abiltyString.length(); i++) {
+            if(abiltyString.indexOf(abiltyRef.charAt(i)) != -1) {
+                switch(i) {
+                    case 0:
+                        SetHasBreakthrough(true);
+                        break;
+                    case 1:
+                        SetHasSmmnSickness(false);
+                        break;
+                    case 2:
+                        SetHasGaurd(true);
+                        break;
+                }
+            }
+        }
+    }
 }
+
