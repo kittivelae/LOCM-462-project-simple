@@ -34,36 +34,36 @@ public class Agent {
             player.setDraw(in.nextInt());
             player.clearCards();
         }
-        state.opp().setHandSize(in.nextInt());
-        state.opp().setTotalMovesLastTurn(in.nextInt());
+        state.nonTurnPlayer().setHandSize(in.nextInt());
+        state.nonTurnPlayer().setTotalMovesLastTurn(in.nextInt());
         if (in.hasNextLine()) {
             in.nextLine();
         }
-        for (int i = 0; i < state.opp().getTotalMovesLastTurn(); i++) {
-            in.nextLine();
+        for (int i = 0; i < state.nonTurnPlayer().getTotalMovesLastTurn(); i++) {
+            //sequence of strings describing actions opponent took last turn
+            in.nextLine(); //on more complicated difficulties will need to use this to set card diffs correctly
         }
         int cardCount = in.nextInt();
         for (int i = 0; i < cardCount; i++) {
-            Card card = new Card();
-            card.setUid(in.nextInt());
-            card.setIid(in.nextInt());
+            int uid = in.nextInt();
+            int iid = in.nextInt();
+            CardRef cardRef = new CardRef(iid, uid);
             int location = in.nextInt();
-            card.setCardType(in.nextInt());
-            card.setCost(in.nextInt());
-            card.setAttack(in.nextInt());
-            card.setDefense(in.nextInt());
-            card.setAbilities(in.next());
-            card.setHpChange(in.nextInt());
-            card.setHpChangeEnemy(in.nextInt());
-            card.setCardDraw(in.nextInt());
             if(location == 0) {
-                state.me().appendHand(card);
-            } else if(location == 1) {
-                state.me().appendBoard(card);
-            } else if(location == -1) {
-                state.opp().appendBoard(card);
-            }
-            state.me().setHandSize(state.me().getHand().size()); //move this to Player
+                state.turnPlayer().appendHand(cardRef);
+            } else {
+                in.nextInt(); //cardType
+                int cost = in.nextInt();
+                int attack = in.nextInt();
+                int defense = in.nextInt();
+                String abilities = in.next();
+                int hpChange = in.nextInt();
+                int hpChangeEnemy = in.nextInt();
+                int cardDraw = in.nextInt();
+                state.updateDiff(cardRef,
+                        new Card(cost, attack, defense, abilities, hpChange, hpChangeEnemy, cardDraw),
+                        location);
+            state.turnPlayer().setHandSize(); //move this to Player
         }
     }
 
@@ -72,33 +72,33 @@ public class Agent {
         int prospectiveCard = 0;
         for (int i = 0; i < 2; i++) {
             int cardCost = draftOptions[i].getCost();
-            double prospectScore = Card.getCostWeighting(cardCost)*Math.pow(0.95, state.me().getCostCurveForGivenVal(cardCost));
+            double prospectScore = Card.getCostWeighting(cardCost)*Math.pow(0.95, state.turnPlayer().getCostCurveForGivenVal(cardCost));
             if (prospectScore > score) {
                 score = prospectScore;
                 prospectiveCard = i;
             }
         }
         System.out.println("PICK " + prospectiveCard + ";");
-        state.me().incrementCostCurveForGivenVal(draftOptions[prospectiveCard].getCost());
+        state.turnPlayer().incrementCostCurveForGivenVal(draftOptions[prospectiveCard].getCost());
     }
 
     int stateEvalForPlay() {
         //Acknowledgement: this is a refactor of Strategy-Card-Game-AI-Competition/referee-nim/Research/StateEvaluations/Simple.nim
         int score = 0;
         //death
-        if(state.me().getHp() <= 0) {
+        if(state.turnPlayer().getHp() <= 0) {
             score -= 1000;
-        } else if(state.opp().getHp() <= 0) {
+        } else if(state.nonTurnPlayer().getHp() <= 0) {
             score += 1000;
         }
-        score += 2 * (state.me().getHp() - state.opp().getHp()); //Health
-        score += 5 * (state.me().getHandSize() - state.opp().getHandSize()); //hand advantage
+        score += 2 * (state.turnPlayer().getHp() - state.nonTurnPlayer().getHp()); //Health
+        score += 5 * (state.turnPlayer().getHandSize() - state.nonTurnPlayer().getHandSize()); //hand advantage
         //board advantage
-        score += 5 * (state.me().getBoard().size() - state.opp().getBoard().size());
-        for(Card card : state.me().getBoard()) {
+        score += 5 * (state.turnPlayer().getBoard().size() - state.nonTurnPlayer().getBoard().size());
+        for(Card card : state.turnPlayer().getBoard()) {
             score += card.getAttack() + card.getDefense();
         }
-        for(Card card : state.opp().getBoard()) {
+        for(Card card : state.nonTurnPlayer().getBoard()) {
             score -= card.getAttack() - card.getDefense();
         }
         return score;

@@ -6,15 +6,21 @@ public class State {
 
     private Player[] players = new Player[2];
     private EnumMap<ActionType, Object> validActions = new EnumMap<>(ActionType.class);
-
+    private boolean playersFlipped = false;
 
     public Player[] getPlayers() {
         return players;
     }
-    public Player opp() {
+    public Player nonTurnPlayer() {
+        if(playersFlipped) return players[0];
         return players[1];
     }
-    public Player me() {
+    public Player turnPlayer() {
+        if(playersFlipped) return players[1];
+        return players[0];
+    }
+    public Player getPlayerByLocation(int location) {
+        if(location == 0 || location == 1) return players[0];
         return players[0];
     }
     public void setPlayers(Player[] players) {
@@ -26,18 +32,32 @@ public class State {
     public void appendValidActions(ActionType actionType, List<Integer> iids)  {
         validActions.put(ActionType.SUMMON, new ArrayList<Integer>().addAll(iids));
     }
-
+    //need to ascertain the starting turn correctly (use cards in hand)
+    public void simulateTurnChange() {
+        this.playersFlipped = !this.playersFlipped;
+    }
+    public void updateDiff(CardRef cardRef, Card card, int location) {
+        Card referenceCard = Card.getCard(cardRef);
+        int cardHealthDiff = referenceCard.getDefense() - card.getDefense();
+        if (cardHealthDiff != 0) {
+            this.getPlayerByLocation(location).appendDiff(cardRef, new Diff(CardField.HP, cardHealthDiff));
+        if(!referenceCard.isSmmnSickness()) {
+            cardRef.removeSmmnSickness();
+        }
+    }
     public void evalValidActions() {
-        List<Integer> validAttackers;
-        List<Integer> validAtkTargets;
-        List<Integer> cardsWithinBudget;
-        if(me().getBoard().size() < Constants.MAX_CREATURES_IN_LINE && me().getHand().size() != 0) {
-            cardsWithinBudget = me().getHand().entrySet()
+        List<CardRef> validAttackers;
+        List<CardRef> validAtkTargets;
+        List<CardRef> cardsWithinBudget;
+        if(turnPlayer().getBoard().size() < Constants.MAX_CREATURES_IN_LINE && turnPlayer().getHand().size() != 0) {
+            cardsWithinBudget = turnPlayer().getHand().entrySet()
                     .stream()
-                    .filter(c -> c.getValue().getCost() <= me().getCostBudget())
+                    .filter(c -> c.getValue().getCost() <= turnPlayer().getCostBudget())
                     .map(Map.Entry::getKey)
                     .collect(Collectors.toList());
             appendValidActions(ActionType.SUMMON, cardsWithinBudget);
+        }
+        turnPlayer().getBoard().entr
         }
     }
 }

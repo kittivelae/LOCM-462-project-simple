@@ -1,12 +1,4 @@
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-/**
- * Auto-generated code below aims at helping you parse
- * the standard input according to the problem statement.
- **/
+import java.util.*;
 
 public class Player {
     private Map<Integer, Integer> costCurve = new HashMap<>() {{
@@ -21,8 +13,8 @@ public class Player {
     private int draw;
     private int handSize;
     private int totalMovesLastTurn;
-    private Map<Integer, Card> hand = new HashMap<>();
-    private List<Card> board = new ArrayList<>();
+    private Map<CardRef, List<Diff>> board = new HashMap<>();
+    private List<CardRef> hand = new ArrayList<>();
 
     public int getCostCurveForGivenVal(int cost) {
         return costCurve.get(cost);
@@ -74,21 +66,36 @@ public class Player {
     public void setHandSize(int handSize) {
         this.handSize = handSize;
     }
-    public void appendHand(Card card) {
-        hand.add(card);
+    public void setHandSize() {
+        this.handSize = this.getHand().size();
     }
-    public Map<Integer, Card> getHand() {
+    public void appendHand(CardRef cardRef) {
+        hand.add(cardRef);
+    }
+    public List<CardRef> getHand() {
         return hand;
     }
-    public void appendBoard(Card card) {
-        board.add(card);
+    public void appendBoard(CardRef cardRef) { ;
+        board.put(cardRef, new ArrayList<>());
     }
-    public List<Card> getBoard() {
+    public void appendDiff(CardRef cardRef, Diff diff) {
+        this.board.get(cardRef).add(diff);
+    }
+    public Map<CardRef, List<Diff>> getBoard() {
         return board;
     }
+    //remove maybe
     public void clearCards() {
         hand = new ArrayList<>();
-        board = new ArrayList<>();
+        board = new HashMap<>();
     }
+    public void attackCharacter(CardRef attacker, CardRef defender) {}
+    public void summonCreatureFromHand(CardRef cardRef) {
+        hand.remove(cardRef);
+        this.board.put(cardRef, new ArrayList<Diff>());
+        this.setHandSize(this.getHandSize() - 1);
+    }
+    public void damagePlayer(int damage) {this.hp -= damage;}
+    public void healPlayer(int heal) {this.hp += heal;}
 }
 

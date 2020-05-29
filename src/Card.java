@@ -1,5 +1,9 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.lang.Integer.parseInt;
 
 
 public class Card {
@@ -23,96 +27,82 @@ public class Card {
 
     };
 
+    private static final Map<Integer, Card> cardDb = new HashMap<>() {{
+        try (BufferedReader br = new BufferedReader(new FileReader("res/cardlist.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] values = line.split(" ; ");
+                put(parseInt(values[0]), new Card(
+                        parseInt(values[3]),
+                        parseInt(values[3]),
+                        parseInt(values[3]),
+                        values[6],
+                        parseInt(values[3]),
+                        parseInt(values[3]),
+                        parseInt(values[3])));
+            }
+        }
+    }};
+
+    public static Card getCard(CardRef cardRef) {
+        return cardDb.get(cardRef);
+    }
+
     public static float getCostWeighting(int cost) {
         return Card.costWeights.get(cost);
     }
 
-
-    /*private static Map<Integer, Card> cardList = new HashMap<>();
-
-    public static void main(String[] args)
-    {
-        Card.loadCards();
-    }
-
-    public static void loadCards() {
-        try(BufferedReader in = new BufferedReader(new FileReader("res/cardlist.txt"))) {
-            String str;
-            while ((str = in.readLine()) != null) {
-                String[] stringSplits = str.split(" ; ");
-                int cardId = Integer.parseInt(stringSplits[0]);
-                Card card = new Card();
-                switch (stringSplits[2]) {
-                    case "creature":
-                        card.cardType = 0;
-                        break;
-                    case "itemGreen":
-                        card.cardType = 1;
-                        break;
-                    case "itemRed":
-                        card.cardType = 2;
-                        break;
-                    case "itemBlue":
-                        card.cardType = 3;
-                        break;
-                }
-                card.cost = Integer.parseInt(stringSplits[3]);
-                card.attack = Integer.parseInt(stringSplits[4]);
-                card.defense = Integer.parseInt(stringSplits[5]);
-                card.abilities = stringSplits[6];
-                card.hpChange = Integer.parseInt(stringSplits[7]);
-                card.hpChangeEnemy = Integer.parseInt(stringSplits[8]);
-                card.cardDraw = Integer.parseInt(stringSplits[9]);
-                Card.cardList.put(cardId, card);
-                //cardList.put()
-            }
-        }
-        catch (IOException e) {
-            System.out.println("File Read Error");
-        }
-    }*/
-
-    private int uid;
+    //private int uid;
     //private int iid;
-    private int location;
-    private int cardType;
+    //private int location;
+    //private int cardType;
     private int cost;
     private int attack;
     private int defense;
-    private boolean hasBreakthrough = false;
-    private boolean hasGuard = false;
-    private boolean hasSmmnSickness = true;
-    private String abilities;
+    private boolean breakthrough = false;
+    private boolean guard = false;
+    private boolean smmnSickness = true;
+    //private String abilities;
     private int hpChange;
     private int hpChangeEnemy;
     private int cardDraw;
 
-    public int getUid() {
-        return uid;
+    public Card(int cost, int attack, int defense, String abilities, int hpChange, int hpChangeEnemy, int cardDraw) {
+        this.cost = cost;
+        this.attack = attack;
+        this.defense = defense;
+        this.abilityParse(abilities);
+        this.hpChange = hpChange;
+        this.hpChangeEnemy = hpChangeEnemy;
+        this.cardDraw = cardDraw;
     }
 
-    public void setUid(int uid) {
-        this.uid = uid;
-    }
-
-    public int getIid() {
-        return iid;
-    }
-    public void setIid(int iid) {
-        this.iid = iid;
-    }
-    public int getLocation() {
-        return location;
-    }
-    public void setLocation(int location) {
-        this.location = location;
-    }
-    public int getCardType() {
-        return cardType;
-    }
-    public void setCardType(int cardType) {
-        this.cardType = cardType;
-    }
+//    public int getUid() {
+//        return uid;
+//    }
+//
+//    public void setUid(int uid) {
+//        this.uid = uid;
+//    }
+//
+//    public int getIid() {
+//        return iid;
+//    }
+//    public void setIid(int iid) {
+//        this.iid = iid;
+//    }
+//    public int getLocation() {
+//        return location;
+//    }
+//    public void setLocation(int location) {
+//        this.location = location;
+//    }
+//    public int getCardType() {
+//        return cardType;
+//    }
+//    public void setCardType(int cardType) {
+//        this.cardType = cardType;
+//    }
     public int getCost() {
         return cost;
     }
@@ -131,12 +121,12 @@ public class Card {
     public void setDefense(int defense) {
         this.defense = defense;
     }
-    public String getAbilities() {
-        return abilities;
-    }
-    public void setAbilities(String abilities) {
-        this.abilities = abilities;
-    }
+//    public String getAbilities() {
+//        return abilities;
+//    }
+//    public void setAbilities(String abilities) {
+//        this.abilities = abilities;
+//    }
     public int getHpChange() {
         return hpChange;
     }
@@ -156,19 +146,43 @@ public class Card {
         this.cardDraw = cardDraw;
     }
 
+    public void setBreakthrough(boolean hasBreakthrough) {
+        this.breakthrough = hasBreakthrough;
+    }
+
+    public void setGuard(boolean hasGuard) {
+        this.guard = hasGuard;
+    }
+
+    public void setSmmnSickness(boolean hasSmmnSickness) {
+        this.smmnSickness = hasSmmnSickness;
+    }
+
+    public boolean isBreakthrough() {
+        return breakthrough;
+    }
+
+    public boolean isGuard() {
+        return guard;
+    }
+
+    public boolean isSmmnSickness() {
+        return smmnSickness;
+    }
+
     void abilityParse(String abiltyString) {
         String abiltyRef = "BCGDLW";
         for(int i = 0; i < abiltyString.length(); i++) {
             if(abiltyString.indexOf(abiltyRef.charAt(i)) != -1) {
                 switch(i) {
                     case 0:
-                        SetHasBreakthrough(true);
+                        this.setBreakthrough(true);
                         break;
                     case 1:
-                        SetHasSmmnSickness(false);
+                        this.setSmmnSickness(false);
                         break;
                     case 2:
-                        SetHasGaurd(true);
+                        this.setGuard(true);
                         break;
                 }
             }
