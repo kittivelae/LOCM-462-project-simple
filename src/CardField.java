@@ -1,3 +1,3 @@
 public enum CardField {
-    HP //not to be confused with MAXHP, which may need to be added in a later version
+    CURRENT_HP //not to be confused with MAX_HP, which may need to be added in a later version
 }

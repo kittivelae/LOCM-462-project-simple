@@ -21,10 +21,16 @@ public class CardRef {
     final int iid;
     final int uid;
     private boolean smmnSickness = true;
+    private final EnumMap<CardField, Integer> cardModifiers = new EnumMap<>(CardField.class);
 
     CardRef(int iid, int uid) {
         this.iid=iid;
         this.uid=uid;
+    }
+
+    //when items are included will need to overload to support things other than int
+    public void updateCardModifiers(CardField cardField, int quantity) {
+        cardModifiers.put(cardField, quantity);
     }
 
     public int getIid() {
@@ -44,6 +50,9 @@ public class CardRef {
     }
 
     public int getDefence() {
+        if (cardModifiers.containsKey(CardField.CURRENT_HP)) {
+            return cardModifiers.get(CardField.CURRENT_HP);
+        }
         return Card.getDefence(uid);
     }
 

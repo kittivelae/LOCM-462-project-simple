@@ -55,51 +55,46 @@ public class State {
         this.playersFlipped = !this.playersFlipped;
     }
 
-
-
-    public String doAction(ActionType action, CardRefPair cardRefPair) { }
-
-    public void updateDiff(CardRef cardRef, Card card, int location) {
-        Card referenceCard = Card.getCard(cardRef.getUid());
-        int cardHealthDiff = referenceCard.getDefense() - card.getDefense();
-        if (cardHealthDiff != 0) {
-            this.getPlayerByLocation(location).appendDiff(cardRef, new Diff(CardField.HP, cardHealthDiff));
-            if (!referenceCard.isSmmnSickness()) {
-                cardRef.removeSmmnSickness();
-            }
+    public String doAction(ActionType action) {
+        if(action == ActionType.PASS) {
+            return "PASS;";
         }
+        else throw new IllegalArgumentException("Not a recognised or valid action");
     }
 
-    public String doAction(ActionType action, CardRef... args) {
-        if(args.length == 0 && action == ActionType.PASS) {
-            return "PASS";
-        } else if(args.length == 1 && action == ActionType.SUMMON) {
-            this.summonCreatureFromHand(args[0]);
-            return "SUMMON " + args[0].getIid();
-        } else if(args.length == 2 && action == ActionType.ATTACK) {
-            this.attackCharacter(args[0], args[1]);
-            return "ATTACK " + args[0] + " " + args[1];
+    public String doAction(ActionType action, CardRef cardRef1, CardRef cardRef2) {
+        if(action == ActionType.ATTACK) {
+            this.attackCharacter(cardRef1, cardRef2);
+            return "ATTACK " + cardRef1.getIid() + " " + cardRef2.getIid();
+        } else throw new IllegalArgumentException("Not a recognised or valid action");
+    }
+
+    public String doAction(ActionType action, CardRef cardRef) {
+        if(action == ActionType.SUMMON) {
+            this.turnPlayer().summonCreatureFromHand(cardRef);
+            this.turnPlayer().changeHealth(cardRef.getHpChange());
+            this.nonTurnPlayer().changeHealth(cardRef.getHpChangeEnemy());
+            this.turnPlayer().increaseHandSize(cardRef.getCardDraw());
+            return "SUMMON " + cardRef.getIid();
         } else throw new IllegalArgumentException("Not a recognised or valid action");
     }
 
     public void attackCharacter(CardRef attacker, CardRef defender) {
-        int defenderHealth = attacker.getAttack() - defender.getDefence();
-        int attackerHealth = defender.getAttack() - attacker.getDefence();
+        int defenderHealth = defender.getDefence() - attacker.getAttack();
+        int attackerHealth = attacker.getDefence() - defender.getAttack();
         if(defenderHealth < 0) {
             if(attacker.isBreakthrough()) {
-                //need to be able to deal damage to opponent but cant access from Player
+                nonTurnPlayer().changeHealth(defenderHealth);
             }
-            //destroy defender
+            nonTurnPlayer().destroyCreature(defender);
+        } else {
+            defender.updateCardModifiers(CardField.CURRENT_HP, defenderHealth);
         }
         if(attackerHealth < 0) {
-            //destroy attacker
+            turnPlayer().destroyCreature(attacker);
+        } else {
+            attacker.updateCardModifiers(CardField.CURRENT_HP, attackerHealth);
         }
-    }
-
-    public void summonCreatureFromHand(CardRef cardRef) {
-        hand.remove(cardRef);
-        this.board.put(cardRef, new ArrayList<Diff>());
-        this.setHandSize(this.getHandSize() - 1);
     }
 
     public void evalValidActions() {
@@ -115,10 +110,9 @@ public class State {
                     .collect(Collectors.toList());
             validActions.put(ActionType.SUMMON, cardsWithinBudget);
         }
-        validAttackers = turnPlayer().getBoard().entrySet()
+        validAttackers = turnPlayer().getBoard()
                 .stream()
-                .filter(c -> c.getKey().isSmmnSickness())
-                .map(Map.Entry::getKey)
+                .filter(c -> c.isSmmnSickness())
                 .collect(Collectors.toList());
         if(validAttackers.size() == 0) {
             validActions.put(ActionType.ATTACK, validAttackers);
@@ -126,13 +120,12 @@ public class State {
             //this first looks for creatures on opp's board with Guard.
             //if it finds none, it sets the valid targets to all opp's creatures
             //plus opponent themself.
-            validAtkTargets = nonTurnPlayer().getBoard().entrySet()
+            validAtkTargets = nonTurnPlayer().getBoard()
                     .stream()
-                    .filter(c -> c.getKey().isGuard())
-                    .map(Map.Entry::getKey)
+                    .filter(c -> c.isGuard())
                     .collect(Collectors.toList());
             if (validAtkTargets.size() == 0) {
-                validAtkTargets = new ArrayList<>(nonTurnPlayer().getBoard().keySet());
+                validAtkTargets = new ArrayList<>(nonTurnPlayer().getBoard());
                 validAtkTargets.add(CardRef.nonTurnPlayer);
             }
             for (CardRef attacker : validAttackers) {

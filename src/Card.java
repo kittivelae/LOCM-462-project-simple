@@ -11,7 +11,7 @@ public class Card {
 
     private int cost;
     private int attack;
-    private final int defence;
+    private final int defence; //can also be considered HP of card
     private boolean breakthrough = false;
     private boolean guard = false;
     private boolean smmnSickness = true;
@@ -23,7 +23,7 @@ public class Card {
         this.cost = cost;
         this.attack = attack;
         this.defence = defence;
-        this.abilityParse(abilities);
+        this.abilityParse(abilities, this);
         this.hpChange = hpChange;
         this.hpChangeEnemy = hpChangeEnemy;
         this.cardDraw = cardDraw;

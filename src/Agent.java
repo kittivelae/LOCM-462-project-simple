@@ -2,11 +2,8 @@ import java.util.Scanner;
 
 public class Agent {
 
-
-
     private State state;
     Scanner in = new Scanner(System.in);
-    CardActionPairGenerator cardActionPairGenerator = new CardActionPairGenerator();
 
     void draft() {
         //noinspection InfiniteLoopStatement
@@ -32,7 +29,6 @@ public class Agent {
             player.setCardsRemaining(in.nextInt());
             player.setRune(in.nextInt());
             player.setDraw(in.nextInt());
-            player.clearCards();
         }
         state.nonTurnPlayer().setHandSize(in.nextInt());
         state.nonTurnPlayer().setTotalMovesLastTurn(in.nextInt());
@@ -72,7 +68,7 @@ public class Agent {
         int prospectiveCard = 0;
         for (int i = 0; i < 2; i++) {
             int cardCost = draftOptions[i].getCost();
-            double prospectScore = Card.getCostWeighting(cardCost)*Math.pow(0.95, state.turnPlayer().getCostCurveForGivenVal(cardCost));
+            double prospectScore = Constants.getCostWeighting(cardCost)*Math.pow(0.95, state.turnPlayer().getCostCurveForGivenVal(cardCost));
             if (prospectScore > score) {
                 score = prospectScore;
                 prospectiveCard = i;
@@ -95,11 +91,11 @@ public class Agent {
         score += 4 * (state.turnPlayer().getHandSize() - state.nonTurnPlayer().getHandSize()); //hand advantage
         //board advantage
         score += 5 * (state.turnPlayer().getBoard().size() - state.nonTurnPlayer().getBoard().size());
-        for(Card card : state.turnPlayer().getBoard()) {
-            score += card.getAttack() + card.getDefense();
+        for(CardRefBoard cardRefBoard : state.turnPlayer().getBoard()) {
+            score += cardRefBoard.getAttack() + cardRefBoard.getDefence();
         }
-        for(Card card : state.nonTurnPlayer().getBoard()) {
-            score -= card.getAttack() - card.getDefense();
+        for(CardRefBoard cardRefBoard : state.nonTurnPlayer().getBoard()) {
+            score -= cardRefBoard.getAttack() - cardRefBoard.getDefence();
         }
         return score;
     }

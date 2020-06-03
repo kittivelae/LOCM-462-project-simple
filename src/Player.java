@@ -1,5 +1,4 @@
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Player {
 
@@ -16,9 +15,8 @@ public class Player {
     private int draw;
     private int handSize;
     private int totalMovesLastTurn;
-    private Map<CardRef, List<Diff>> board = new HashMap<>();
+    private List<CardRef> board = new ArrayList<>();
     private List<CardRef> hand = new ArrayList<>();
-
 
     public int getCostCurveForGivenVal(int cost) {
         return costCurve.get(cost);
@@ -91,25 +89,41 @@ public class Player {
     public void appendHand(CardRef cardRef) {
         hand.add(cardRef);
     }
+
     public List<CardRef> getHand() {
         return hand;
     }
-    public void appendBoard(CardRef cardRef) { ;
-        board.put(cardRef, new ArrayList<>());
+
+    public void summonCreatureFromHand(CardRef cardRef) {
+        this.hand.remove(cardRef);
+        this.board.add(cardRef);
+        this.setHandSize(this.getHandSize() - 1);
     }
-    public void appendDiff(CardRef cardRef, Diff diff) {
-        this.board.get(cardRef).add(diff);
+
+    public void destroyCreature(CardRef cardRef) {
+        board.remove(cardRef);
     }
-    public Map<CardRef, List<Diff>> getBoard() {
+
+    public void appendBoard(CardRef cardRef) {
+        board.add(cardRef);
+    }
+
+    public List<CardRef> getBoard() {
         return board;
     }
+
     //remove maybe
     public void clearCards() {
         hand = new ArrayList<>();
-        board = new HashMap<>();
+        board = new ArrayList<>();
     }
 
+    public void changeHealth(int amount) {
+        this.hp += amount;
+    }
 
-    public void changeHealth(int amount) {this.hp += amount;}
+    public void increaseHandSize(int cardDraw) {
+        this.draw += cardDraw;
+    }
 }
 
