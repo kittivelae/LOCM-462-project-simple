@@ -83,13 +83,13 @@ public class Card {
     }
 
     public static boolean isSmmnSickness(int uid) {
-        return getCard(uid).smmnSickness;
+        return  getCard(uid).smmnSickness;
     }
 
     static void abilityParse(String abiltyString, Card card) {
-        String abiltyRef = "BCGDLW";
+        String abilityRef = "BCGDLW";
         for(int i = 0; i < abiltyString.length(); i++) {
-            if(abiltyString.indexOf(abiltyRef.charAt(i)) != -1) {
+            if(abiltyString.indexOf(abilityRef.charAt(i)) != -1) {
                 switch(i) {
                     case 0:
                         card.breakthrough = true;

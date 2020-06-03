@@ -72,13 +72,31 @@ public class Player {
         this.handSize = this.getHand().size();
     }
 
-    public void appendHand(CardRef cardRef) {
-        hand.add(cardRef);
+    public void increaseHandSize(int cardDraw) {
+        this.handSize = Math.min(this.handSize + cardDraw, Constants.MAX_CARDS_IN_HAND);
+    }
+
+    public void setHand(List<CardRef> hand) {
+        this.hand = hand;
     }
 
     public List<CardRef> getHand() {
         return hand;
     }
+
+    public void setBoard(List<CardRef> board) {
+        this.board = board;
+    }
+
+    public List<CardRef> getBoard() {
+        return board;
+    }
+
+    public void changeHealth(int amount) {
+        this.hp += amount;
+    }
+
+
 
     public void summonCreatureFromHand(CardRef cardRef) {
         this.hand.remove(cardRef);
@@ -90,26 +108,5 @@ public class Player {
         board.remove(cardRef);
     }
 
-    public void appendBoard(CardRef cardRef) {
-        board.add(cardRef);
-    }
-
-    public List<CardRef> getBoard() {
-        return board;
-    }
-
-    //remove maybe
-    public void clearCards() {
-        hand = new ArrayList<>();
-        board = new ArrayList<>();
-    }
-
-    public void changeHealth(int amount) {
-        this.hp += amount;
-    }
-
-    public void increaseHandSize(int cardDraw) {
-        this.handSize = Math.min(this.handSize + cardDraw, Constants.MAX_CARDS_IN_HAND);
-    }
 }
 

@@ -1,12 +1,11 @@
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Agent {
 
     private State state;
     Scanner in = new Scanner(System.in);
 
-    void draft() {
+    void readDraft() {
         Map<Integer, Integer> costCurve = new HashMap<>() {{
             for(int i=0; i<13; i++) {
                 put(i, 0);
@@ -46,14 +45,6 @@ public class Agent {
         }
     }
 
-    void play() {
-        //noinspection InfiniteLoopStatement
-        while (true) {
-            this.read();
-            System.out.println("PASS");
-        }
-    }
-
     void readPlayerInformation() {
         for(Player player : state.getPlayers())
         {
@@ -76,7 +67,10 @@ public class Agent {
 
 
 
-    void read() {
+    void readBattle() {
+        List<CardRef> newHand = new ArrayList<>();
+        List<CardRef> newBoard = new ArrayList<>();
+        List<CardRef> newOppBoard = new ArrayList<>();
         int cardCount = in.nextInt();
         for (int i = 0; i < cardCount; i++) {
             int uid = in.nextInt();
@@ -84,22 +78,27 @@ public class Agent {
             CardRef cardRef = new CardRef(iid, uid);
             int location = in.nextInt();
             if (location == 0) {
-                state.turnPlayer().appendHand(cardRef);
+                newHand.add(cardRef);
             } else {
                 in.nextInt(); //cardType
-                int cost = in.nextInt();
-                int attack = in.nextInt();
-                int defense = in.nextInt();
+                in.nextInt(); //cost
+                in.nextInt(); //attack
+                cardRef.updateCardModifiers(CardField.CURRENT_HP, in.nextInt()); //defence
                 String abilities = in.next();
-                int hpChange = in.nextInt();
-                int hpChangeEnemy = in.nextInt();
-                int cardDraw = in.nextInt();
-                state.updateDiff(cardRef,
-                        new Card(cost, attack, defense, abilities, hpChange, hpChangeEnemy, cardDraw),
-                        location);
+                in.nextInt(); //hpChange
+                in.nextInt(); //hpChangeEnemy
+                in.nextInt(); //draw
+                if (location == 1) {
+                    newBoard.add(cardRef);
+                } else if (location == -1) {
+                    newOppBoard.add(cardRef);
+                }
             }
         }
+        state.turnPlayer().setHand(newHand);
+        state.turnPlayer().setBoard(newBoard);
         state.turnPlayer().setHandSize(); //move this to Player
+        state.nonTurnPlayer().setBoard(newOppBoard);
     }
 
     int stateEvalForPlay() {
@@ -115,11 +114,11 @@ public class Agent {
         score += 4 * (state.turnPlayer().getHandSize() - state.nonTurnPlayer().getHandSize()); //hand advantage
         //board advantage
         score += 5 * (state.turnPlayer().getBoard().size() - state.nonTurnPlayer().getBoard().size());
-        for(CardRefBoard cardRefBoard : state.turnPlayer().getBoard()) {
-            score += cardRefBoard.getAttack() + cardRefBoard.getDefence();
+        for(CardRef cardRef : state.turnPlayer().getBoard()) {
+            score += cardRef.getAttack() + cardRef.getDefence();
         }
-        for(CardRefBoard cardRefBoard : state.nonTurnPlayer().getBoard()) {
-            score -= cardRefBoard.getAttack() - cardRefBoard.getDefence();
+        for(CardRef cardRef : state.nonTurnPlayer().getBoard()) {
+            score -= cardRef.getAttack() - cardRef.getDefence();
         }
         return score;
     }

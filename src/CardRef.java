@@ -20,12 +20,13 @@ public class CardRef {
     // https://stackoverflow.com/questions/10234487/storing-number-pairs-in-java
     final int iid;
     final int uid;
-    private boolean smmnSickness = true;
+    private boolean smmnSickness;
     private final EnumMap<CardField, Integer> cardModifiers = new EnumMap<>(CardField.class);
 
     CardRef(int iid, int uid) {
         this.iid=iid;
         this.uid=uid;
+        this.smmnSickness = Card.isSmmnSickness(uid);
     }
 
     //when items are included will need to overload to support things other than int
