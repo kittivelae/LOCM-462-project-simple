@@ -12,6 +12,8 @@ import java.util.Map;
 
 public class CardRef {
 
+    //Special card ref that indicates non-turn player is targeted for attack
+    public static final CardRef nonTurnPlayer = new CardRef(-1, -1);
 
 
     // acknowledgment: class from this SO answer:
@@ -34,6 +36,20 @@ public class CardRef {
         return uid;
     }
 
+    public int getCost() {
+        return Card.getCost(getUid());
+    }
+
+    public boolean isGuard() {
+        return Card.isGuard(getUid());
+    }
+
+    public boolean isBreakthrough() {}
+
+    public int getAttack() {return Card.getAttack(getUid())}
+
+    public int getDefence(Diff diff) {}
+
     public void removeSmmnSickness() {
         this.smmnSickness = false;
     }
@@ -41,4 +57,5 @@ public class CardRef {
     public boolean isSmmnSickness() {
         return smmnSickness;
     }
+
 }

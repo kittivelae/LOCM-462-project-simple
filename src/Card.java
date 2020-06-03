@@ -34,18 +34,31 @@ public class Card {
                 String[] values = line.split(" ; ");
                 put(parseInt(values[0]), new Card(
                         parseInt(values[3]),
-                        parseInt(values[3]),
-                        parseInt(values[3]),
+                        parseInt(values[4]),
+                        parseInt(values[5]),
                         values[6],
-                        parseInt(values[3]),
-                        parseInt(values[3]),
-                        parseInt(values[3])));
+                        parseInt(values[7]),
+                        parseInt(values[8]),
+                        parseInt(values[9])));
             }
         }
     }};
 
-    public static Card getCard(CardRef cardRef) {
-        return cardDb.get(cardRef);
+    public static Card getCard(int uid) {
+        return cardDb.get(uid);
+    }
+
+    public static int getCost(int uid) {
+        return getCard(uid).getCost();
+    }
+    public static int getAttack(int uid) {
+        return getCard(uid).getAttack();
+    }
+    public static int getDefence(int uid) {
+        return getCard(uid).getAttack();
+    }
+    public static boolean isGuard(int uid) {
+        return getCard(uid).isGuard();
     }
 
     public static float getCostWeighting(int cost) {

@@ -92,7 +92,7 @@ public class Agent {
             score += 1000;
         }
         score += 2 * (state.turnPlayer().getHp() - state.nonTurnPlayer().getHp()); //Health
-        score += 5 * (state.turnPlayer().getHandSize() - state.nonTurnPlayer().getHandSize()); //hand advantage
+        score += 4 * (state.turnPlayer().getHandSize() - state.nonTurnPlayer().getHandSize()); //hand advantage
         //board advantage
         score += 5 * (state.turnPlayer().getBoard().size() - state.nonTurnPlayer().getBoard().size());
         for(Card card : state.turnPlayer().getBoard()) {
