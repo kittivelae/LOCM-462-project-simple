@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -7,6 +8,25 @@ import java.util.Scanner;
  */
 public final class Constants
 {
+
+  private static final Map<Integer, Float> costWeights = new HashMap<>() {
+    {
+      put(0, 0.9f);
+      put(1, 1.2f);
+      put(2, 1.1f);
+      put(3, 1.0f);
+      put(4, 0.9f);
+      put(5, 0.8f);
+      put(6, 0.7f);
+      put(7, 0.6f);
+      put(8, 0.4f);
+      put(9, 0.4f);
+      put(10, 0.2f);
+      put(11, 0.2f);
+      put(12, 0.2f);
+    }
+
+  };
   public static int VERBOSE_LEVEL = 3; // 3 - full, 2 - without turn details, 1 - results only, 0 - silent
 
   public static int LANES = 1;

@@ -20,8 +20,7 @@ public class CardRef {
     // https://stackoverflow.com/questions/10234487/storing-number-pairs-in-java
     final int iid;
     final int uid;
-
-    boolean smmnSickness = true;
+    private boolean smmnSickness = true;
 
     CardRef(int iid, int uid) {
         this.iid=iid;
@@ -37,18 +36,28 @@ public class CardRef {
     }
 
     public int getCost() {
-        return Card.getCost(getUid());
+        return Card.getCost(uid);
     }
 
-    public boolean isGuard() {
-        return Card.isGuard(getUid());
+    public int getAttack() {
+        return Card.getAttack(uid);
     }
 
-    public boolean isBreakthrough() {}
+    public int getDefence() {
+        return Card.getDefence(uid);
+    }
 
-    public int getAttack() {return Card.getAttack(getUid())}
+    public int getHpChange() {
+        return Card.getHpChange(uid);
+    }
 
-    public int getDefence(Diff diff) {}
+    public int getHpChangeEnemy() {
+        return Card.getHpChangeEnemy(uid);
+    }
+
+    public int getCardDraw() {
+        return Card.getCardDraw(uid);
+    }
 
     public void removeSmmnSickness() {
         this.smmnSickness = false;
@@ -56,6 +65,14 @@ public class CardRef {
 
     public boolean isSmmnSickness() {
         return smmnSickness;
+    }
+
+    public boolean isBreakthrough() {
+        return Card.isBreakthrough(uid);
+    }
+
+    public boolean isGuard() {
+        return Card.isGuard(uid);
     }
 
 }

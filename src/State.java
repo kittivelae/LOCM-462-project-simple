@@ -70,6 +70,38 @@ public class State {
         }
     }
 
+    public String doAction(ActionType action, CardRef... args) {
+        if(args.length == 0 && action == ActionType.PASS) {
+            return "PASS";
+        } else if(args.length == 1 && action == ActionType.SUMMON) {
+            this.summonCreatureFromHand(args[0]);
+            return "SUMMON " + args[0].getIid();
+        } else if(args.length == 2 && action == ActionType.ATTACK) {
+            this.attackCharacter(args[0], args[1]);
+            return "ATTACK " + args[0] + " " + args[1];
+        } else throw new IllegalArgumentException("Not a recognised or valid action");
+    }
+
+    public void attackCharacter(CardRef attacker, CardRef defender) {
+        int defenderHealth = attacker.getAttack() - defender.getDefence();
+        int attackerHealth = defender.getAttack() - attacker.getDefence();
+        if(defenderHealth < 0) {
+            if(attacker.isBreakthrough()) {
+                //need to be able to deal damage to opponent but cant access from Player
+            }
+            //destroy defender
+        }
+        if(attackerHealth < 0) {
+            //destroy attacker
+        }
+    }
+
+    public void summonCreatureFromHand(CardRef cardRef) {
+        hand.remove(cardRef);
+        this.board.put(cardRef, new ArrayList<Diff>());
+        this.setHandSize(this.getHandSize() - 1);
+    }
+
     public void evalValidActions() {
         //will need to take another look at this once i implement items
         List<CardRef> validAttackers;
