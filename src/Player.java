@@ -2,12 +2,6 @@ import java.util.*;
 
 public class Player {
 
-    private Map<Integer, Integer> costCurve = new HashMap<>() {{
-            for(int i=0; i<13; i++) {
-                put(i, 0);
-            }
-        }};
-
     private int hp;
     private int costBudget;
     private int cardsRemaining;
@@ -17,14 +11,6 @@ public class Player {
     private int totalMovesLastTurn;
     private List<CardRef> board = new ArrayList<>();
     private List<CardRef> hand = new ArrayList<>();
-
-    public int getCostCurveForGivenVal(int cost) {
-        return costCurve.get(cost);
-    }
-
-    public void incrementCostCurveForGivenVal(int cost) {
-        costCurve.put(cost, costCurve.get(cost) + 1);
-    }
 
     public int getHp() {
         return hp;
@@ -123,7 +109,7 @@ public class Player {
     }
 
     public void increaseHandSize(int cardDraw) {
-        this.draw += cardDraw;
+        this.handSize = Math.min(this.handSize + cardDraw, Constants.MAX_CARDS_IN_HAND);
     }
 }
 

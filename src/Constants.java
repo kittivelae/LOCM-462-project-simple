@@ -4,29 +4,34 @@ import java.util.Map;
 import java.util.Scanner;
 
 /**
- * Acknoledgements - file copied from LoCM source code
+ * Acknowledgements - file copied from LoCM source code
  */
 public final class Constants
 {
 
-  private static final Map<Integer, Float> costWeights = new HashMap<>() {
+  private static final Map<Integer, Double> costWeights = new HashMap<>() {
     {
-      put(0, 0.9f);
-      put(1, 1.2f);
-      put(2, 1.1f);
-      put(3, 1.0f);
-      put(4, 0.9f);
-      put(5, 0.8f);
-      put(6, 0.7f);
-      put(7, 0.6f);
-      put(8, 0.4f);
-      put(9, 0.4f);
-      put(10, 0.2f);
-      put(11, 0.2f);
-      put(12, 0.2f);
+      put(0, 0.9);
+      put(1, 1.2);
+      put(2, 1.1);
+      put(3, 1.0);
+      put(4, 0.9);
+      put(5, 0.8);
+      put(6, 0.7);
+      put(7, 0.6);
+      put(8, 0.4);
+      put(9, 0.4);
+      put(10, 0.2);
+      put(11, 0.2);
+      put(12, 0.2);
     }
 
   };
+
+  public static double getCostWeighting(int cost) {
+    return costWeights.get(cost);
+  }
+
   public static int VERBOSE_LEVEL = 3; // 3 - full, 2 - without turn details, 1 - results only, 0 - silent
 
   public static int LANES = 1;

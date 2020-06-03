@@ -1,4 +1,5 @@
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Agent {
 
@@ -6,10 +7,42 @@ public class Agent {
     Scanner in = new Scanner(System.in);
 
     void draft() {
+        Map<Integer, Integer> costCurve = new HashMap<>() {{
+            for(int i=0; i<13; i++) {
+                put(i, 0);
+            }
+        }};
         //noinspection InfiniteLoopStatement
-        while (true) {
-            this.read();
-            System.out.println("PICK 0");
+        for (int turn = 0; turn < 30; turn++) {
+            this.readPlayerInformation();
+            int cardCount = in.nextInt();
+            List<CardRef> draftOptions = new ArrayList<>();
+            for (int i = 0; i < cardCount; i++) {
+                int iid = in.nextInt(); //iid
+                int uid = in.nextInt(); //uid
+                CardRef cardRef = new CardRef(iid, uid);
+                in.nextInt(); //location
+                in.nextInt(); //cardType
+                in.nextInt(); //cost
+                in.nextInt(); //attack
+                in.nextInt(); //defence
+                in.next(); //abilitystring
+                in.nextInt(); //hpChange
+                in.nextInt(); //hpChangeEnemy
+                in.nextInt(); //cardDraw
+                draftOptions.add(cardRef);
+            }
+            double score = 0;
+            int prospectiveCard = 0;
+            for (CardRef cardRef : draftOptions) {
+                double prospectScore = Constants.getCostWeighting(cardRef.getCost())*Math.pow(0.95, costCurve.get(cardRef.getCost()));
+                if (prospectScore > score) {
+                    score = prospectScore;
+                    prospectiveCard = draftOptions.indexOf(cardRef);
+                }
+            }
+            System.out.println("PICK " + prospectiveCard + ";");
+            costCurve.put(draftOptions.get(prospectiveCard).getCost(), costCurve.get(draftOptions.get(prospectiveCard).getCost())+1);
         }
     }
 
@@ -21,7 +54,7 @@ public class Agent {
         }
     }
 
-    void read() {
+    void readPlayerInformation() {
         for(Player player : state.getPlayers())
         {
             player.setHp(in.nextInt());
@@ -39,13 +72,18 @@ public class Agent {
             //sequence of strings describing actions opponent took last turn
             in.nextLine(); //on more complicated difficulties will need to use this to set card diffs correctly
         }
+    }
+
+
+
+    void read() {
         int cardCount = in.nextInt();
         for (int i = 0; i < cardCount; i++) {
             int uid = in.nextInt();
             int iid = in.nextInt();
             CardRef cardRef = new CardRef(iid, uid);
             int location = in.nextInt();
-            if(location == 0) {
+            if (location == 0) {
                 state.turnPlayer().appendHand(cardRef);
             } else {
                 in.nextInt(); //cardType
@@ -59,23 +97,9 @@ public class Agent {
                 state.updateDiff(cardRef,
                         new Card(cost, attack, defense, abilities, hpChange, hpChangeEnemy, cardDraw),
                         location);
-            state.turnPlayer().setHandSize(); //move this to Player
-        }
-    }
-
-    void cardEvalForDraft(Card[] draftOptions) {
-        double score = 0;
-        int prospectiveCard = 0;
-        for (int i = 0; i < 2; i++) {
-            int cardCost = draftOptions[i].getCost();
-            double prospectScore = Constants.getCostWeighting(cardCost)*Math.pow(0.95, state.turnPlayer().getCostCurveForGivenVal(cardCost));
-            if (prospectScore > score) {
-                score = prospectScore;
-                prospectiveCard = i;
             }
         }
-        System.out.println("PICK " + prospectiveCard + ";");
-        state.turnPlayer().incrementCostCurveForGivenVal(draftOptions[prospectiveCard].getCost());
+        state.turnPlayer().setHandSize(); //move this to Player
     }
 
     int stateEvalForPlay() {
