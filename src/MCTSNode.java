@@ -67,12 +67,24 @@ public class MCTSNode{
         this.timesVisited = timesVisited;
     }
 
-    public MCTSNode selection(BranchSelector branchSelector, Object... args) {
+    public MCTSNode selection(double epsilon) {
         if(children.size() == 0) return this;
-        List<Object> newList = new ArrayList<>();
-        newList.add(children);
-        for(Object arg : args) newList.add(arg);
-        return branchSelector.selector().select();
+        MCTSNode chosen = children.get((int)(Math.random() * children.size()));
+        if (Math.random() < epsilon) {
+            return chosen;
+        }
+        double score = 0;
+        for (MCTSNode node : children) {
+            if (node.getTimesVisited() == 0) { //something in here to print actions so the game does them
+                continue;
+            }
+            double prospectiveScore = node.getReward() / node.getTimesVisited() + Math.sqrt(2 * Math.log(node.getParent().getTimesVisited()) / node.getTimesVisited());
+            if (prospectiveScore > score) {
+                score = prospectiveScore;
+                chosen = node;
+            }
+        }
+        return chosen.selection(epsilon);
     }
 
     public void expand() {
