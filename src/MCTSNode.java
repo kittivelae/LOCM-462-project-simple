@@ -90,7 +90,7 @@ public class MCTSNode{
         this.timesVisited = timesVisited;
     }
 
-    public String selection(double epsilon) {
+    public MCTSNode selection(double epsilon) {
         if(children.size() == 0) return this;
         MCTSNode chosen = children.get((int)(Math.random() * children.size()));
         if (Math.random() < epsilon) {
@@ -107,11 +107,10 @@ public class MCTSNode{
                 chosen = node;
             }
         }
-        ActionType actionType = chosen.getAction();
+        String actionString = chosen.getAction().name() + " ";
         ArrayList<CardRef> cardRefs = chosen.getActionCards();
-        if(cardRefs.size() == 1) {
-            chosen.selection(epsilon);
-            return chosen.state.doAction(actionType, cardRefs.get(0)) + "; ";
+        for(CardRef cardRef : cardRefs) {
+            actionString = actionString + cardRef.getIid() + " ";
         }
         algorithm.appendSelectionAction(chosen.state.doAction(action.keySet().iterator().next(), action.values().iterator().next()) + "; ");
         chosen.selection(epsilon);
