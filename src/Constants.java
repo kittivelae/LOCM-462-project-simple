@@ -1,4 +1,6 @@
 import java.io.*;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -31,6 +33,8 @@ public final class Constants
   public static double getCostWeighting(int cost) {
     return costWeights.get(cost);
   }
+
+  public static final ThreadMXBean timeCounter = ManagementFactory.getThreadMXBean();
 
   public static int VERBOSE_LEVEL = 3; // 3 - full, 2 - without turn details, 1 - results only, 0 - silent
 

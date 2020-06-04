@@ -9,8 +9,8 @@ public class MCTS {
     private MCTSNode tail;
     private List<String> selectedActionString = new ArrayList<>();
     private final double computeTime;
+    private long startTime;
     private final double epsilon;
-    private final ThreadMXBean timeCounter = ManagementFactory.getThreadMXBean();
 
     public MCTS(State state, double computeTime, double epsilon) {
         this.root = new MCTSNode(state, this);
@@ -19,9 +19,11 @@ public class MCTS {
     }
 
     public String algorithm() {
-        long startTime = this.timeCounter.getCurrentThreadCpuTime();
-
-
+        startTime = Constants.timeCounter.getCurrentThreadCpuTime();
+        MCTSNode toExpand = root.selection(epsilon);
+        toExpand.getState().evalValidActions();
+        ArrayList<CardRefPair> validAttacks = toExpand.getState().getValidAttacks();
+        ArrayList<CardRef> validSummons = toExpand.getState().getValidSummons();
     }
 
     public void appendSelectionAction(String actionString) {

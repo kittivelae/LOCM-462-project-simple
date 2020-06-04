@@ -57,15 +57,15 @@ public class State {
 
     public String doAction(ActionType action) {
         if(action == ActionType.PASS) {
-            return "PASS;";
+            return "PASS";
         }
         else throw new IllegalArgumentException("Not a recognised or valid action");
     }
 
-    public String doAction(ActionType action, ArrayList<CardRef> cardRefs) {
+    public String doAction(ActionType action, CardRef cardRef1, CardRef cardRef2) {
         if(action == ActionType.ATTACK) {
-            this.attackCharacter(cardRefs.get(0), cardRefs.get(1));
-            return "ATTACK " + cardRefs.get(1).getIid() + " " + cardRefs.get(1).getIid();
+            this.attackCharacter(cardRef1, cardRef2);
+            return "ATTACK " + cardRef1.getIid() + " " + cardRef2.getIid();
         } else throw new IllegalArgumentException("Not a recognised or valid action");
     }
 
@@ -135,6 +135,14 @@ public class State {
             }
             validActions.put(ActionType.ATTACK, validAttacks);
         }
+    }
+
+    public ArrayList<CardRefPair> getValidAttacks() {
+        return (ArrayList<CardRefPair>) validActions.get(ActionType.ATTACK);
+    }
+
+        public ArrayList<CardRef> getValidSummons() {
+            return (ArrayList<CardRef>) validActions.get(ActionType.SUMMON);
     }
 }
 

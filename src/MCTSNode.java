@@ -24,14 +24,35 @@ public class MCTSNode{
         this.action.put(actionType, cardRefs);
     }
 
-    public MCTSNode(MCTSNode parent, State state, ActionType actionType) {
+    public MCTSNode(MCTSNode parent, State state, ActionType actionType, CardRef cardRef) {
         this.parent = parent;
         this.state = state;
-        this.action.put(ActionType.PASS, null);
+        this.action.put(actionType, new ArrayList<>().add(cardRef));
+    }
+
+    public MCTSNode(MCTSNode parent, State state, ActionType actionType) {
+        assert actionType == ActionType.PASS;
+        this.parent = parent;
+        this.state = state;
+        this.action.put(actionType, null);
+    }
+
+    public void appendToActionStrings() {
+        if (getActionCards().size() == 0) {
+            algorithm.appendSelectionAction(state.doAction(action.keySet().iterator().next()));
+        } else if (getActionCards().size() == 1) {
+            algorithm.appendSelectionAction(state.doAction(action.keySet().iterator().next(), getActionCards().get(0)));
+        } else if (getActionCards().size() == 2) {
+            algorithm.appendSelectionAction(state.doAction(action.keySet().iterator().next(), getActionCards().get(0), getActionCards().get(1)));
+        } else throw new IllegalStateException("something is wrong with the action picked during selection");
     }
 
     public List<MCTSNode> getChildren() {
         return children;
+    }
+
+    public void appendChild(MCTSNode mctsNode) {
+        children.add(mctsNode);
     }
 
     public void setChildren(List<MCTSNode> children) {
@@ -107,14 +128,9 @@ public class MCTSNode{
                 chosen = node;
             }
         }
-        String actionString = chosen.getAction().name() + " ";
-        ArrayList<CardRef> cardRefs = chosen.getActionCards();
-        for(CardRef cardRef : cardRefs) {
-            actionString = actionString + cardRef.getIid() + " ";
-        }
-        algorithm.appendSelectionAction(chosen.state.doAction(action.keySet().iterator().next(), action.values().iterator().next()) + "; ");
-        chosen.selection(epsilon);
+            return chosen.selection(epsilon);
     }
+
 
     public void expand() {
         this.setExpanded(true);
