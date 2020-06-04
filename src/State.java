@@ -62,10 +62,10 @@ public class State {
         else throw new IllegalArgumentException("Not a recognised or valid action");
     }
 
-    public String doAction(ActionType action, CardRef cardRef1, CardRef cardRef2) {
+    public String doAction(ActionType action, ArrayList<CardRef> cardRefs) {
         if(action == ActionType.ATTACK) {
-            this.attackCharacter(cardRef1, cardRef2);
-            return "ATTACK " + cardRef1.getIid() + " " + cardRef2.getIid();
+            this.attackCharacter(cardRefs.get(0), cardRefs.get(1));
+            return "ATTACK " + cardRefs.get(1).getIid() + " " + cardRefs.get(1).getIid();
         } else throw new IllegalArgumentException("Not a recognised or valid action");
     }
 

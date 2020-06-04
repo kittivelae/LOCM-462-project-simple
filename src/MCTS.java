@@ -1,16 +1,30 @@
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MCTS {
 
-    class UCT implements BranchSelector {
+    private MCTSNode root;
+    private MCTSNode tail;
+    private List<String> selectedActionString = new ArrayList<>();
+    private final double computeTime;
+    private final double epsilon;
+    private final ThreadMXBean timeCounter = ManagementFactory.getThreadMXBean();
 
-        @Override
-        public BranchSelection1Param<List<MCTSNode>, Double> selector() {
-            //something in here to actually do the actions
-            return (children, epsilon) -> {
+    public MCTS(State state, double computeTime, double epsilon) {
+        this.root = new MCTSNode(state, this);
+        this.computeTime = computeTime;
+        this.epsilon = epsilon;
+    }
 
-            };
-        }
+    public String algorithm() {
+        long startTime = this.timeCounter.getCurrentThreadCpuTime();
+
+    }
+
+    public void appendSelectionAction(String actionString) {
+        selectedActionString.add(actionString);
     }
 }
 
